@@ -1,0 +1,25 @@
+{
+	"name": "bibliomaniac",
+	"dependenciies": {
+		"jquery": "*",
+		"big-sky/code-mirror": "*",
+		"component/underscore": "*",
+		"shaunxcode/ouija": "*"
+	},
+
+	"scripts": [
+		"index.js",
+		"vendor/backbone.js",
+		"vendor/backbone.localStorage.js",
+		"vendor/jquery.splitter.js",
+		"lib/data/Book/Model.js",
+		"lib/data/Book/Collection.js",
+		"lib/data/Book/Chapter/Model.js",
+		"lib/data/Book/Chapter/Collection.js",
+		"lib/App.js"
+	],
+
+	"styles": [
+		"lib/App.css"
+	]
+}

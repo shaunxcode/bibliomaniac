@@ -1,0 +1,47 @@
+{
+	"name": "bibliomaniac",
+
+	"description": "an interface for creating and managing ebooks",
+
+	"version": "0.0.1",
+
+	"keywords": ["ebook", "mobi"],
+
+	"maintainers": [{
+		"name": "Shaun Gilchrist",
+		"email": "shaunxcode@gmail.com",
+		"web": "http://order-of-no.posterous.com"
+	}], 
+
+	"contributors": [{
+		"name": "Shaun Gilchrist",
+		"email": "shaunxcode@gmail.com",
+		"web": "http://order-of-no.posterous.com"
+	}], 
+
+	"bugs": "http://www.github.com/shaunxcode/bibliomaniac/issues",
+
+	"licenses": [{
+		"type": "MIT",
+		"url": "http://www.opensource.org/licenses/mit-license.php"
+	}],
+
+	"repositories": [{
+		"type": "git",
+		"url": "http://www.github.com/shaunxcode/bibliomaniac"
+	}],
+
+	"dependencies": {
+	    "coffee-script": "latest",
+	    "optimist": "latest",
+	    "jsedn": "latest",
+	    "express": "latest",
+	    "ent": "latest",
+            "markdown": "latest",
+            "underscore": "underscore"
+	},
+	
+	"bin": {
+		"bibliomaniac": "./bin/bibliomaniac"
+	}
+}
