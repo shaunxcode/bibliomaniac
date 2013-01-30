@@ -1,10 +1,11 @@
 {
 	"name": "bibliomaniac",
-	"dependenciies": {
-		"jquery": "*",
+	"dependencies": {
+		"component/jquery": "*",
 		"big-sky/code-mirror": "*",
 		"component/underscore": "*",
-		"shaunxcode/ouija": "*"
+		"shaunxcode/ouija": "*",
+		"jjclark1982/markdown": "*"
 	},
 
 	"scripts": [
@@ -16,10 +17,14 @@
 		"lib/data/Book/Collection.js",
 		"lib/data/Book/Chapter/Model.js",
 		"lib/data/Book/Chapter/Collection.js",
-		"lib/App.js"
+		"lib/App.js",
+		"lib/ChaptersPanel/View.js",
+		"lib/Editor/View.js",
+		"lib/Preview/View.js"
 	],
 
 	"styles": [
+		"vendor/jquery.splitter.css",
 		"lib/App.css"
 	]
 }
