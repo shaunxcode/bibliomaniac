@@ -35,10 +35,10 @@
 	    "coffee-script": "latest",
 	    "optimist": "latest",
 	    "jsedn": "latest",
-	    "express": "latest",
-	    "ent": "latest",
-            "markdown": "latest",
-            "underscore": "underscore"
+	   	"express": "latest",
+	   	"ent": "latest",
+		"markdown": "latest",
+		"underscore": "latest"
 	},
 	
 	"bin": {

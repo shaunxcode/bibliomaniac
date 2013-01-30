@@ -7,6 +7,7 @@ window.Backbone = vendorRequire "backbone"
 
 vendorRequire "jquery.splitter"
 
+BooksCollection = dataRequire "Book/Collection"
 ChaptersPanelView = require "./ChaptersPanel/View"
 EditorView = require "./Editor/View"
 PreviewView = require "./Preview/View"
@@ -14,7 +15,7 @@ PreviewView = require "./Preview/View"
 
 App = 
 	init: ->
-		$ -> 
+		$ ->
 			@$hspliter = $("#panels").split orientation:"vertical", position: "50%", limit: 0
 
 			$(window).on "resize", =>
@@ -22,8 +23,12 @@ App =
 				
 			$(window).on "spliter.resize", -> Backbone.trigger "AppResized"
 
+
+			@booksCollection = new BooksCollection
+
 			@chaptersPanel = new ChaptersPanelView 
 				el: $("#chapters")
+				collection: @booksCollection
 
 			@chaptersPanel.render()
 
@@ -38,7 +43,7 @@ App =
 			@preview.render()
 
 			Backbone.trigger "AppResized"
-			
-			console.log "Start the bibliomania!"
+
+			@booksCollection.fetch()
 
 module.exports = App

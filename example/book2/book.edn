@@ -1,0 +1,32 @@
+{
+	:name "SomeBook"
+	:title "My Book Title"
+	:description "A Book about things" 
+	:authors ["Shaun Gilchrist"]
+	:publisher "hyper-super-meta"
+	:publicationDate "2013-01-30"
+	:isbn "666-0-666-66666-7"
+	:language "en-us"
+	:subject "Reference"
+	:coverImage "cover.gif"
+	:bookStarts :foreword
+	:toc [
+		:title "Title"
+		:toc "Table of Contents"
+		:foreword "Foreword"
+		:introduction "Introduction"
+		:ch1 "In which I become a typewriter"
+		:ch2 "An unlikely encounter with APL" 
+		:ch3 "How loud is too loud?"
+		:ch4 "So you think you can swim?"
+		:ch5 "On the fractal nature of problem solving"
+	]
+	:env {
+		:* {
+			:exampleGlobal "this is an example of a global var that you can place anywhere in your chapters"
+		}
+		:ch1 {
+			:ch1var "this is something that only shows up in chapter1"
+		}
+	}
+}

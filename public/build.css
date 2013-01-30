@@ -376,6 +376,10 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .spliter_panel .right_panel {
   right: 0
 }
+body {
+  font-family: helvetica
+}
+
 #chapters {
   position: fixed;
   left: 0;
@@ -384,6 +388,34 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   border-right: 1px solid #333;
   bottom: 0;
   overflow: auto
+}
+
+#chapters ul {
+  margin: 0;
+  padding: 0
+}
+
+#chapters li {
+  list-style-type: none;
+  padding: 5px;
+  border: 3px solid #ddd;
+  margin: 5px;
+  margin-right: 10px;
+  height: 150px;
+  font-size: 85%;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative
+}
+
+#chapters li .wordCount {
+  position: absolute;
+  bottom: 0
+}
+
+#chapters li.active {
+  border-color: #3E6699;
+  background: #FFF6C5
 }
 
 #center {
@@ -400,4 +432,15 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror {
   line-height: 1.35em
+}
+
+.preview .content {
+  padding-left: 5px
+}
+
+.preview .content h1,
+.preview .content h2,
+.preview .content h3,
+.preview .content h4 {
+  text-align: center
 }

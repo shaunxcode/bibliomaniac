@@ -16,12 +16,26 @@ class View extends Backbone.View
 
 		@listenTo Backbone, "EditorScrollAtBottom", @scrollToBottom
 
+		@listenTo Backbone, "ActiveBook", (book) => @activeBook = book 
+
+		@listenTo Backbone, "OpenChapter", (chapter) => @activeChapter = chapter
+
 		@$el.on "scroll", => Backbone.trigger "PreviewScrollTop", @$el.scrollTop()
 
+		@$el.html @$content = $("<div />").addClass "content"
 		this
 
 	renderPreview: (md) ->
-		@$el.html markdown.toHTML us.template md, title: "##This is a title"
+		env = {title: "##This is a title"}
+		if @activeBook 
+			totalEnv = @activeBook.get("env")
+			env = us.extend env, 
+				totalEnv["*"]
+				totalEnv[@activeChapter.get "id"] or {}
+				title: "###{@activeChapter.get "title"}"
+			
+
+		@$content.html markdown.toHTML us.template md, env
 
 	setScroll: (amt) ->
 		@$el.scrollTop amt

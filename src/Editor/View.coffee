@@ -1,6 +1,9 @@
 
 class View extends Backbone.View
 
+	initialize: ->
+		@listenTo Backbone, OpenChapter: (chapter) => @openChapter chapter
+
 	render: ->
 		@$el.html ""
 
@@ -12,6 +15,9 @@ class View extends Backbone.View
 			lineWrapping: true
 			onChange: => 
 				Backbone.trigger "EditorChanged", @editor.getValue()
+				if @chapter
+					@chapter.set wordCount: @editor.getValue().split(/\s+/).length 
+
 			onScroll: =>
 				Backbone.trigger "EditorScrollTop", @$scroller.scrollTop()
 				if @$scroller.scrollTop() is (@$scroller[0].scrollHeight - @$scroller[0].offsetHeight)
@@ -33,5 +39,12 @@ class View extends Backbone.View
 
 	setScroll: (amt) ->
 		@editor.scrollTo 0, amt
+
+	openChapter: (chapter) ->
+		@chapter = chapter 
+		@chapter.fetch success: =>
+			@editor.setValue chapter.get "source"
+			
+
 
 module.exports = View

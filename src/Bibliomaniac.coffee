@@ -17,16 +17,45 @@ for tmpl in fs.readdirSync tmpls
 	templates[tmpl.split(".")[0]] = us.template fs.readFileSync "#{tmpls}/#{tmpl}", "utf-8"
 
 class Book 
-	constructor: (@bookFile) ->
+	toJSON: -> 
+		us.extend @settings(), id: @book, toc: @toc()
+
+	constructor: (@bookDir, @book) ->
+		@bookFile = @bookDir + "/#{@book}/book.edn"
 		@data = book = edn.toJS edn.readFileSync @bookFile
 		@data.env or= {"*": {}}
 
+	settings: ->
+		settings = {}
+		for key, val of @data when @data isnt "toc"
+			settings[key] = val
+		settings 
+
 	toc: ->
 		range = [0..@data.toc.length - 1]
-		pairs = {}
-		for title, i in range by 2
-			pairs[@data.toc[i]] = @data.toc[i + 1]
-		pairs
+		(for title, i in range by 2
+			id: @data.toc[i], title: @data.toc[i + 1])
+
+	getChapterInToc: (chapId) ->
+		for chap in @toc() when chap.id is chapId
+			return chap
+
+	isInToc: (chapId) ->
+		@getChapterInToc(chapId)?
+
+	getChapterSource: (name) ->
+		if not @isInToc name
+			return false
+
+		fileName = "#{@bookDir}/#{@book}/#{name}.md"
+		if not fs.existsSync fileName
+			fs.writeFileSync fileName, "{{title}}\n\nchapter about #{name}"
+		fs.readFileSync fileName, "utf-8"
+
+
+	getChapter: (chapId) ->
+		if chap = @getChapterInToc chapId
+			us.extend chap, source: @getChapterSource chapId
 
 	prep: (outputDirName) -> 
 		if fs.existsSync outputDirName
@@ -47,13 +76,15 @@ class Book
 			title: "Table of Contents"
 			link: "toc.html"
 
-		for chap, title of @toc()
+		for chapter in @toc()
+			chap = chapter.id
+			title = chapter.title 
 
 			console.log "Reading #{chap}, #{title}" 
 			if chap is "toc"
 				tocName = title
 			else
-				mdtxt = fs.readFileSync "./content/#{chap}.md", "utf-8"
+				mdtxt = @getChapterSource chap
 				content = reAmp md.parse ent.encode us.template mdtxt, 
 					us.extend {title: "###{title}\n"}, 
 						@data.env["*"]
@@ -133,4 +164,3 @@ class Book
 		true
 
 module.exports = Book
-

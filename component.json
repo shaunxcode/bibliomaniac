@@ -19,6 +19,7 @@
 		"lib/data/Book/Chapter/Collection.js",
 		"lib/App.js",
 		"lib/ChaptersPanel/View.js",
+		"lib/ChaptersPanel/Chapter/View.js",
 		"lib/Editor/View.js",
 		"lib/Preview/View.js"
 	],

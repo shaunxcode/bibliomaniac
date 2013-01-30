@@ -1,0 +1,25 @@
+{
+	:name "SomeOtherBook"
+	:title "My Book Title about stuff"
+	:description "A Book about things and stuff" 
+	:authors ["Shaun Gilchrist"]
+	:publisher "hyper-super-meta"
+	:publicationDate "2013-01-30"
+	:isbn "666-0-666-66666-7"
+	:language "en-us"
+	:subject "Reference"
+	:coverImage "cover.gif"
+	:bookStarts :foreword
+	:toc [
+		:toc "Table of Contents"
+		:ch1 "An analysis of the area effect"
+		:ch2 "When math was young" 
+		:ch3 "4 ways to rid yourself of unwanted spare change"
+	]
+	:env {
+		:* {
+			:guy "walter"
+			:gal "wanda"
+		}
+	}
+}
