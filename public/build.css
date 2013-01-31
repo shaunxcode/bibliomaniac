@@ -316,6 +316,40 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   cursor: pointer
 }
 
+
+
+.modal-background {
+  position: fixed;
+  display: table;
+  table-layout: fixed;
+  height: 100%;
+  max-height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  background-color: rgba(0, 0, 0, .9);
+  outline: none
+}
+
+.modal-outer {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%
+}
+
+.modal-content {
+  display: inline-block;
+  text-align: left
+}
+
+.modal-hidden .modal-background,
+.modal-hidden.modal-background {
+  display: none
+}
 .spliter_panel {
   position: relative
 }
@@ -380,13 +414,81 @@ body {
   font-family: helvetica
 }
 
+button {
+  font-size: inherit;
+  font-family: inherit;
+  padding: 5px;
+  cursor: pointer
+}
+
+.modal-background {
+  background: rgba(0, 0, 0, 0.7)
+}
+
+.modal-content {
+  width: 650px
+}
+
+.modal-content label {
+  display: block
+}
+
+.modal-content label:after {
+  content: ":"
+}
+
+.modal-content input[type="text"] {
+  width: 300px;
+  margin-bottom: 1.5em;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 5px
+}
+
+.modal-content > div {
+  float: left;
+  width: 300px;
+  margin-right: 25px
+}
+
+.modal-content .buttons {
+  width: 100%;
+  float: right;
+  margin-right: 9px;
+  text-align: right
+}
+
 #chapters {
   position: fixed;
   left: 0;
   top: 0;
   width: 199px;
   border-right: 1px solid #333;
-  bottom: 0;
+  bottom: 0
+}
+
+#chapters .topPanel {
+  padding-bottom: 10px
+}
+
+#chapters .topPanel select {
+  margin-top: 5px;
+  display: block;
+  font-size: inherit;
+  font-family: inherit
+}
+
+#chapters .topPanel button {
+  margin-top: 5px
+}
+
+#chapters .topPanel .wordCount {
+  padding: 10px;
+  font-size: 85%
+}
+
+#chapters .holder {
+  border-top: 1px solid #333;
   overflow: auto
 }
 
@@ -413,9 +515,15 @@ body {
   bottom: 0
 }
 
+#chapters li .details {
+  position: absolute;
+  bottom: 0;
+  right: 0
+}
+
 #chapters li.active {
-  border-color: #3E6699;
-  background: #FFF6C5
+  border-color: #3e6699;
+  background: #fff6c5
 }
 
 #center {
@@ -435,7 +543,10 @@ body {
 }
 
 .preview .content {
-  padding-left: 5px
+  padding-left: 5px;
+  margin-bottom: 3em;
+  margin-left: auto;
+  margin-right: auto
 }
 
 .preview .content h1,
@@ -443,4 +554,29 @@ body {
 .preview .content h3,
 .preview .content h4 {
   text-align: center
+}
+
+.sizeToggles {
+  position: fixed;
+  bottom: 5px;
+  right: 10px
+}
+
+.sizeToggles button {
+  font-size: 85%;
+  opacity: 0.9;
+  border: 3px solid #333333;
+  border-radius: 5px
+}
+
+.sizeToggles button.active {
+  background: #fff6c5;
+  border-color: #3e6699
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 5px;
+  border: 1px solid #fefefe;
+  padding: 5px
 }

@@ -16,7 +16,10 @@ class View extends Backbone.View
 			onChange: => 
 				Backbone.trigger "EditorChanged", @editor.getValue()
 				if @chapter
-					@chapter.set wordCount: @editor.getValue().split(/\s+/).length 
+					@chapter.set 
+						source: @editor.getValue()
+						wordCount: @editor.getValue().split(/\s+/).length
+					@chapter.save()
 
 			onScroll: =>
 				Backbone.trigger "EditorScrollTop", @$scroller.scrollTop()
@@ -35,10 +38,15 @@ class View extends Backbone.View
 
 		@listenTo Backbone, "PreviewScrollTop", @setScroll
 
+		@listenTo Backbone, "PreviewScrollAtBottom", @scrollToBottom
+
 		this
 
 	setScroll: (amt) ->
 		@editor.scrollTo 0, amt
+
+	scrollToBottom: ->
+		@editor.scrollTo 0, @$scroller[0].scrollHeight
 
 	openChapter: (chapter) ->
 		@chapter = chapter 

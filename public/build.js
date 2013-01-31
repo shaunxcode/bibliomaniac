@@ -15763,6 +15763,399 @@ function merge_text_nodes( jsonml ) {
 } )() );
 
 });
+require.register("component-emitter/index.js", function(module, exports, require){
+
+/**
+ * Expose `Emitter`.
+ */
+
+module.exports = Emitter;
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks[event] = this._callbacks[event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  var self = this;
+  this._callbacks = this._callbacks || {};
+
+  function on() {
+    self.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  fn._off = on;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  var callbacks = this._callbacks[event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks[event];
+    return this;
+  }
+
+  // remove specific handler
+  var i = callbacks.indexOf(fn._off || fn);
+  if (~i) callbacks.splice(i, 1);
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks[event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks[event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+});
+require.register("component-indexof/index.js", function(module, exports, require){
+
+var indexOf = [].indexOf;
+
+module.exports = function(arr, obj){
+  if (indexOf) return arr.indexOf(obj);
+  for (var i = 0; i < arr.length; ++i) {
+    if (arr[i] === obj) return i;
+  }
+  return -1;
+};
+});
+require.register("component-classes/index.js", function(module, exports, require){
+
+/**
+ * Module dependencies.
+ */
+
+var index = require('indexof');
+
+/**
+ * Whitespace regexp.
+ */
+
+var re = /\s+/;
+
+/**
+ * Wrap `el` in a `ClassList`.
+ *
+ * @param {Element} el
+ * @return {ClassList}
+ * @api public
+ */
+
+module.exports = function(el){
+  return new ClassList(el);
+};
+
+/**
+ * Initialize a new ClassList for `el`.
+ *
+ * @param {Element} el
+ * @api private
+ */
+
+function ClassList(el) {
+  this.el = el;
+  this.list = el.classList;
+}
+
+/**
+ * Add class `name` if not already present.
+ *
+ * @param {String} name
+ * @return {ClassList}
+ * @api public
+ */
+
+ClassList.prototype.add = function(name){
+  // classList
+  if (this.list) {
+    this.list.add(name);
+    return this;
+  }
+
+  // fallback
+  var arr = this.array();
+  var i = index(arr, name);
+  if (!~i) arr.push(name);
+  this.el.className = arr.join(' ');
+  return this;
+};
+
+/**
+ * Remove class `name` when present.
+ *
+ * @param {String} name
+ * @return {ClassList}
+ * @api public
+ */
+
+ClassList.prototype.remove = function(name){
+  // classList
+  if (this.list) {
+    this.list.remove(name);
+    return this;
+  }
+
+  // fallback
+  var arr = this.array();
+  var i = index(arr, name);
+  if (~i) arr.splice(i, 1);
+  this.el.className = arr.join(' ');
+  return this;
+};
+
+/**
+ * Toggle class `name`.
+ *
+ * @param {String} name
+ * @return {ClassList}
+ * @api public
+ */
+
+ClassList.prototype.toggle = function(name){
+  // classList
+  if (this.list) {
+    this.list.toggle(name);
+    return this;
+  }
+
+  // fallback
+  if (this.has(name)) {
+    this.remove(name);
+  } else {
+    this.add(name);
+  }
+  return this;
+};
+
+/**
+ * Return an array of classes.
+ *
+ * @return {Array}
+ * @api public
+ */
+
+ClassList.prototype.array = function(){
+  var arr = this.el.className.split(re);
+  if ('' === arr[0]) arr.pop();
+  return arr;
+};
+
+/**
+ * Check if class `name` is present.
+ *
+ * @param {String} name
+ * @return {ClassList}
+ * @api public
+ */
+
+ClassList.prototype.has =
+ClassList.prototype.contains = function(name){
+  return this.list
+    ? this.list.contains(name)
+    : !! ~index(this.array(), name);
+};
+
+});
+require.register("discore-fluid-modal/index.js", function(module, exports, require){
+var htmlClasses = require('classes')(document.documentElement)
+
+var modal = module.exports = {
+  get exists () {
+    return !!modal.background
+  },
+  get shown () {
+    return modal.background && !htmlClasses.has('modal-hidden')
+  },
+  get opened () {
+    return modal.shown
+  },
+  get closed () {
+    return !modal.shown
+  },
+  get hidden () {
+    return !modal.shown
+  }
+}
+
+require('emitter')(modal)
+
+modal.create = function () {
+  if (modal.exists) return modal;
+
+  modal.emit('create')
+
+  var background = modal.background = document.body.appendChild(createDiv())
+  var outer = modal.outer = background.appendChild(createDiv())
+  var content = modal.content = outer.appendChild(createDiv())
+
+  background.className = 'modal-background'
+  outer.className = 'modal-outer'
+  content.className = 'modal-content'
+
+  return modal.emit('created')
+}
+
+modal.open = modal.show = function () {
+  if (!modal.exists) modal.create();
+
+  modal.emit('show').emit('open')
+
+  htmlClasses.remove('modal-hidden').add('modal-shown')
+
+  return modal.emit('shown').emit('opened')
+}
+
+modal.close = modal.hide = function () {
+  modal.emit('hide').emit('close')
+
+  htmlClasses.add('modal-hidden').remove('modal-shown')
+
+  return modal.emit('hidden').emit('closed')
+}
+
+modal.toggle = function () {
+  modal.emit('toggle')
+
+  modal[modal.shown ? 'hide' : 'show']()
+
+  return modal.emit('toggled')
+}
+
+modal.destroy = function () {
+  if (!modal.exists) return modal;
+
+  modal.hide()
+
+  modal.emit('destroy')
+
+  el.parentNode.removeChild(el)
+  modal.background = modal.outer = modal.content = null
+
+  return modal.emit('destroyed')
+}
+
+modal.clear = function () {
+  if (!modal.exists) return modal;
+
+  modal.emit('clear')
+
+  modal.content.innerHTML = ''
+
+  return modal.emit('cleared')
+}
+
+function createDiv() {
+  return document.createElement('div')
+}
+
+});
 require.register("bibliomaniac/index.js", function(module, exports, require){
 module.exports = require("./lib/App");
 });
@@ -17809,6 +18202,11 @@ require.register("bibliomaniac/lib/App.js", function(module, exports, require){
           position: "50%",
           limit: 0
         });
+        $(window).on("keyup", function(event) {
+          if (event.keyCode === 27) {
+            return Backbone.trigger("escape");
+          }
+        });
         $(window).on("resize", function() {
           return _this.$hspliter.trigger("spliter.resize");
         });
@@ -17843,11 +18241,15 @@ require.register("bibliomaniac/lib/App.js", function(module, exports, require){
 require.register("bibliomaniac/lib/ChaptersPanel/View.js", function(module, exports, require){
 // Generated by CoffeeScript 1.3.3
 (function() {
-  var ChapterView, View,
+  var ChapterView, TextInputView, View, modal,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   ChapterView = require("./Chapter/View");
+
+  TextInputView = appRequire("Input/Text");
+
+  modal = require("fluid-modal");
 
   View = (function(_super) {
 
@@ -17857,15 +18259,87 @@ require.register("bibliomaniac/lib/ChaptersPanel/View.js", function(module, expo
       return View.__super__.constructor.apply(this, arguments);
     }
 
+    View.prototype.bookFields = {
+      title: {
+        label: "Title"
+      },
+      description: {
+        label: "Description"
+      },
+      authors: {
+        label: "Author(s)"
+      },
+      publisher: {
+        label: "Publisher"
+      },
+      publicationDate: {
+        label: "Publication Date"
+      },
+      isbn: {
+        label: "ISBN"
+      },
+      language: {
+        label: "Language"
+      },
+      subject: {
+        label: "Subject"
+      }
+    };
+
     View.prototype.render = function() {
       var _this = this;
-      this.$el.html(this.$booksCombo = $("<select />"));
-      this.$el.append(this.$chapters = $("<ul />"));
       this.chapterViews = [];
+      this.$el.html(this.$topPanel = $("<div />").addClass("topPanel").append(this.$booksCombo = $("<select />"), this.$newChapterButton = $("<button />").text("new chapter"), this.$detailsButton = $("<button />").text("details"), this.$wordCount = $("<div />").addClass("wordCount")));
+      this.$el.append(this.$holder = $("<div />").addClass("holder").html(this.$chapters = $("<ul />")));
       this.listenTo(this.collection, "reset", this.addAll);
-      return this.$booksCombo.on("change", function() {
+      this.$booksCombo.on("change", function() {
         return _this.renderChapters(_this.collection.get(_this.$booksCombo.val()));
       });
+      this.listenTo(Backbone, "AppResized", function() {
+        return _this.$holder.css({
+          height: _this.$el.innerHeight() - _this.$topPanel.outerHeight()
+        });
+      });
+      this.listenTo(Backbone, "EditorChanged", this.setWordCount);
+      modal.hide();
+      modal.create();
+      this.listenTo(this.$detailsButton, {
+        click: function() {
+          var detail, field, m, view, _ref;
+          modal.show();
+          m = $(modal.content).html("");
+          _ref = _this.bookFields;
+          for (field in _ref) {
+            detail = _ref[field];
+            view = new TextInputView({
+              model: _this.activeBook,
+              field: field,
+              label: detail.label
+            });
+            m.append(view.render().$el);
+          }
+          return m.append($("<div />").addClass("buttons").append($("<button />").text("Cancel").on({
+            click: function() {
+              return modal.hide();
+            }
+          }), $("<button />").text("Save")));
+        }
+      });
+      return this.listenTo(Backbone, "escape", function() {
+        return modal.hide();
+      });
+    };
+
+    View.prototype.setWordCount = function() {
+      var wc;
+      if (!this.activeBook) {
+        return;
+      }
+      wc = 0;
+      this.activeBook.chapters.each(function(chapter) {
+        return wc += chapter.get("wordCount");
+      });
+      return this.$wordCount.text("Total Words: " + wc);
     };
 
     View.prototype.addAll = function() {
@@ -17887,6 +18361,8 @@ require.register("bibliomaniac/lib/ChaptersPanel/View.js", function(module, expo
     View.prototype.renderChapters = function(book) {
       var chap, _i, _len, _ref,
         _this = this;
+      this.activeBook = book;
+      this.setWordCount();
       Backbone.trigger("ActiveBook", book);
       _ref = this.chapterViews;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -17915,9 +18391,11 @@ require.register("bibliomaniac/lib/ChaptersPanel/View.js", function(module, expo
 require.register("bibliomaniac/lib/ChaptersPanel/Chapter/View.js", function(module, exports, require){
 // Generated by CoffeeScript 1.3.3
 (function() {
-  var View,
+  var View, modal,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  modal = require("fluid-modal");
 
   View = (function(_super) {
 
@@ -17931,20 +18409,38 @@ require.register("bibliomaniac/lib/ChaptersPanel/Chapter/View.js", function(modu
       var _this = this;
       this.$el = $("<li />").text(this.model.get("title"));
       this.$el.append(this.$wordCount = $("<div />").addClass("wordCount").hide());
+      this.$el.append(this.$details = $("<button />").text("d").addClass("details").hide());
       this.listenTo(this.$el, {
         click: function() {
           return _this.open();
+        },
+        mouseover: function() {
+          return _this.$details.show();
+        },
+        mouseleave: function() {
+          return _this.$details.hide();
         }
       });
       this.listenTo(this.model, "change", function() {
-        var wc;
-        if (wc = _this.model.get("wordCount")) {
-          return _this.$wordCount.text("Words: " + wc).show();
-        } else {
-          return _this.$wordCount.hide();
+        return _this.setWordCount();
+      });
+      modal.hide();
+      modal.create();
+      this.listenTo(this.$details, {
+        click: function() {
+          modal.show();
+          return $(modal.content).html("STUFF");
         }
       });
+      this.listenTo(Backbone, "escape", function() {
+        return modal.hide();
+      });
+      this.setWordCount();
       return this;
+    };
+
+    View.prototype.setWordCount = function() {
+      return this.$wordCount.text("Words: " + (this.model.get("wordCount"))).show();
     };
 
     View.prototype.open = function() {
@@ -17998,9 +18494,11 @@ require.register("bibliomaniac/lib/Editor/View.js", function(module, exports, re
         onChange: function() {
           Backbone.trigger("EditorChanged", _this.editor.getValue());
           if (_this.chapter) {
-            return _this.chapter.set({
+            _this.chapter.set({
+              source: _this.editor.getValue(),
               wordCount: _this.editor.getValue().split(/\s+/).length
             });
+            return _this.chapter.save();
           }
         },
         onScroll: function() {
@@ -18020,11 +18518,16 @@ require.register("bibliomaniac/lib/Editor/View.js", function(module, exports, re
         return _this.editor.setValue(_this.editor.getValue());
       });
       this.listenTo(Backbone, "PreviewScrollTop", this.setScroll);
+      this.listenTo(Backbone, "PreviewScrollAtBottom", this.scrollToBottom);
       return this;
     };
 
     View.prototype.setScroll = function(amt) {
       return this.editor.scrollTo(0, amt);
+    };
+
+    View.prototype.scrollToBottom = function() {
+      return this.editor.scrollTo(0, this.$scroller[0].scrollHeight);
     };
 
     View.prototype.openChapter = function(chapter) {
@@ -18049,7 +18552,7 @@ require.register("bibliomaniac/lib/Editor/View.js", function(module, exports, re
 require.register("bibliomaniac/lib/Preview/View.js", function(module, exports, require){
 // Generated by CoffeeScript 1.3.3
 (function() {
-  var View, markdown, us,
+  var View, dims, markdown, us,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -18063,6 +18566,33 @@ require.register("bibliomaniac/lib/Preview/View.js", function(module, exports, r
     interpolate: /\[\{(.+?)\}\]/g
   };
 
+  dims = {
+    web: {
+      w: "100%",
+      h: "100%"
+    },
+    kindle: {
+      w: "758px",
+      h: "1024px"
+    },
+    kindleFire: {
+      w: "800px",
+      h: "1200px"
+    },
+    ipad: {
+      w: "320px",
+      h: "480px"
+    },
+    ipadMini: {
+      w: "768px",
+      h: "1024px"
+    },
+    iphone: {
+      w: "320px",
+      h: "480px"
+    }
+  };
+
   View = (function(_super) {
 
     __extends(View, _super);
@@ -18070,6 +18600,10 @@ require.register("bibliomaniac/lib/Preview/View.js", function(module, exports, r
     function View() {
       return View.__super__.constructor.apply(this, arguments);
     }
+
+    View.prototype.events = {
+      "click button": "sizeToggle"
+    };
 
     View.prototype.render = function() {
       var _this = this;
@@ -18084,10 +18618,38 @@ require.register("bibliomaniac/lib/Preview/View.js", function(module, exports, r
         return _this.activeChapter = chapter;
       });
       this.$el.on("scroll", function() {
-        return Backbone.trigger("PreviewScrollTop", _this.$el.scrollTop());
+        if (_this.$el.scrollTop() >= (_this.$el[0].scrollHeight - _this.$el[0].offsetHeight) - 1) {
+          return Backbone.trigger("PreviewScrollAtBottom");
+        } else {
+          return Backbone.trigger("PreviewScrollTop", _this.$el.scrollTop());
+        }
       });
       this.$el.html(this.$content = $("<div />").addClass("content"));
+      this.$el.append(this.$sizeToggles = $("<div />").addClass("sizeToggles").append($("<button />").text("web").data({
+        type: "web"
+      }).addClass("active"), $("<button />").text("kindle").data({
+        type: "kindle"
+      }), $("<button />").text("kindle fire").data({
+        type: "kindleFire"
+      }), $("<button />").text("ipad").data({
+        type: "ipad"
+      }), $("<button />").text("ipad mini").data({
+        type: "ipadMini"
+      }), $("<button />").text("iphone").data({
+        type: "iphone"
+      })));
       return this;
+    };
+
+    View.prototype.sizeToggle = function(event) {
+      var $button, dim;
+      $button = $(event.currentTarget);
+      $button.siblings().removeClass("active");
+      $button.addClass("active");
+      dim = dims[$button.data("type")];
+      return this.$content.css({
+        width: dim.w
+      });
     };
 
     View.prototype.renderPreview = function(md) {
@@ -18121,6 +18683,39 @@ require.register("bibliomaniac/lib/Preview/View.js", function(module, exports, r
 }).call(this);
 
 });
+require.register("bibliomaniac/lib/Input/Text.js", function(module, exports, require){
+// Generated by CoffeeScript 1.3.3
+(function() {
+  var Text, us,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  us = require("underscore");
+
+  Text = (function(_super) {
+
+    __extends(Text, _super);
+
+    function Text() {
+      return Text.__super__.constructor.apply(this, arguments);
+    }
+
+    Text.prototype.render = function() {
+      this.$el.append($("<label />").text(this.options.label), $("<input />").prop({
+        type: "text"
+      }).val(this.model.get(this.options.field)));
+      return this;
+    };
+
+    return Text;
+
+  })(Backbone.View);
+
+  module.exports = Text;
+
+}).call(this);
+
+});
 require.alias("component-jquery/index.js", "bibliomaniac/deps/jquery/index.js");
 
 require.alias("big-sky-code-mirror/lib/codemirror.js", "bibliomaniac/deps/code-mirror/lib/codemirror.js");
@@ -18133,3 +18728,10 @@ require.alias("shaunxcode-ouija/vendor/jquery-ui-touch-punch.js", "bibliomaniac/
 
 require.alias("jjclark1982-markdown/lib/markdown.js", "bibliomaniac/deps/markdown/lib/markdown.js");
 require.alias("jjclark1982-markdown/lib/markdown.js", "bibliomaniac/deps/markdown/index.js");
+
+require.alias("discore-fluid-modal/index.js", "bibliomaniac/deps/fluid-modal/index.js");
+require.alias("discore-fluid-modal/index.js", "bibliomaniac/deps/fluid-modal/index.js");
+require.alias("component-emitter/index.js", "discore-fluid-modal/deps/emitter/index.js");
+
+require.alias("component-classes/index.js", "discore-fluid-modal/deps/classes/index.js");
+require.alias("component-indexof/index.js", "component-classes/deps/indexof/index.js");

@@ -1,20 +1,90 @@
+@active: #FFF6C5;
+@border: #333;
+@activeBorder: #3E6699;
+
 body {
 	font-family: helvetica;
 }
 
+button {
+	font-size: inherit;
+	font-family: inherit;
+	padding: 5px;
+	cursor: pointer;
+}
+
+.modal-background {
+	background: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+	label {
+		display: block;
+	}
+
+	label:after {
+		content: ":";
+	}
+
+	width: 650px;
+	input[type="text"] {
+		width: 300px;
+		margin-bottom: 1.5em;
+		font-size: inherit;
+		font-family: inherit;
+		padding: 5px;
+	}
+	> div { 
+		float: left;
+		width: 300px;
+		margin-right: 25px;
+	}
+
+	.buttons {
+		width: 100%;
+		float: right; 
+		margin-right: 9px;
+		text-align: right;
+	}
+}
+
 #chapters {
+	.topPanel {
+		select { 
+			margin-top: 5px;
+			display: block;
+			font-size: inherit;
+			font-family: inherit;
+		}
+		button {
+			margin-top: 5px;
+		}
+		padding-bottom: 10px;
+
+		.wordCount {
+			padding: 10px;
+			font-size: 85%;
+		}
+	}
+
 	position: fixed; 
 	left: 0;
 	top: 0;
 	width: 199px;
 	border-right: 1px solid #333;
 	bottom: 0;
-	overflow: auto;
+
+	.holder { 
+		border-top: 1px solid #333;
+		overflow: auto;
+	}
 
 	ul {
+		
 		margin: 0;
 		padding: 0;
 	}
+
 	li {
 		list-style-type: none;
 		padding: 5px;
@@ -31,14 +101,20 @@ body {
 			position: absolute; 
 			bottom: 0;
 		}
+
+		.details {
+			position: absolute; 
+			bottom: 0;
+			right: 0; 
+		}
 	}
 
 	li.active {
-		border-color: #3E6699;
-		background: #FFF6C5;
-		
+		border-color: @activeBorder;
+		background: @active;
 	}
 }
+
 #center {
 	left: 200px;
 	bottom: 0px;
@@ -58,4 +134,30 @@ body {
 .preview .content {
 	h1, h2, h3, h4 { text-align: center; }
 	padding-left: 5px;
+	margin-bottom: 3em;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.sizeToggles { 
+	position: fixed;
+	bottom: 5px;
+	right: 10px;
+	button {
+		font-size: 85%; 
+		opacity: 0.9;
+		border: 3px solid @border;
+		border-radius: 5px;
+	}
+	button.active {
+		background: @active;
+		border-color: @activeBorder;
+	}
+}
+
+.modal-content {
+	background: #fff;
+	border-radius: 5px;
+	border: 1px solid #fefefe;
+	padding: 5px; 
 }

@@ -18,7 +18,11 @@ for tmpl in fs.readdirSync tmpls
 
 class Book 
 	toJSON: -> 
-		us.extend @settings(), id: @book, toc: @toc()
+		toc = @toc()
+		for chap in toc
+			us.extend chap, wordCount: @getChapterSource(chap.id).split(/\s+/).length
+
+		us.extend @settings(), id: @book, toc: toc
 
 	constructor: (@bookDir, @book) ->
 		@bookFile = @bookDir + "/#{@book}/book.edn"
@@ -56,6 +60,11 @@ class Book
 	getChapter: (chapId) ->
 		if chap = @getChapterInToc chapId
 			us.extend chap, source: @getChapterSource chapId
+
+	setChapter: (chapId, chapter) ->
+		#eventually write title back to edn
+		if chap = @getChapterInToc chapId
+			fs.writeFileSync "#{@bookDir}/#{@book}/#{chapId}.md", chapter.source
 
 	prep: (outputDirName) -> 
 		if fs.existsSync outputDirName

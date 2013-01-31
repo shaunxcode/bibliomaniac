@@ -5,7 +5,8 @@
 		"big-sky/code-mirror": "*",
 		"component/underscore": "*",
 		"shaunxcode/ouija": "*",
-		"jjclark1982/markdown": "*"
+		"jjclark1982/markdown": "*",
+		"discore/fluid-modal": "*"
 	},
 
 	"scripts": [
@@ -21,7 +22,8 @@
 		"lib/ChaptersPanel/View.js",
 		"lib/ChaptersPanel/Chapter/View.js",
 		"lib/Editor/View.js",
-		"lib/Preview/View.js"
+		"lib/Preview/View.js",
+		"lib/Input/Text.js"
 	],
 
 	"styles": [

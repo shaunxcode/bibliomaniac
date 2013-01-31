@@ -1,3 +1,3 @@
 {{title}}
 
-chapter about ch2
+APL is more than a language. It is a way of life.

@@ -6,7 +6,9 @@ booksDir = "example"
 Book = require "./Bibliomaniac"
 getBook = (book) -> new Book booksDir, book
 
+
 app.configure ->
+	app.use express.bodyParser()
 	app.use express.static "./public"
 
 	app.get "/books", (req, res) ->
@@ -22,4 +24,9 @@ app.configure ->
 	app.get "/books/:book/chapters/:chapter", (req, res) =>		
 		res.send getBook(req.params.book).getChapter req.params.chapter
 
+	app.put "/books/:book/chapters/:chapter", (req, res) => 
+		getBook(req.params.book).setChapter req.params.chapter, req.body
+		res.send 200
+
 	app.get "/*", (req, res) -> res.sendfile "./public/index.html"
+

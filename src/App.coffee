@@ -18,6 +18,10 @@ App =
 		$ ->
 			@$hspliter = $("#panels").split orientation:"vertical", position: "50%", limit: 0
 
+			$(window).on "keyup", (event) ->
+				if event.keyCode is 27
+					Backbone.trigger "escape"
+
 			$(window).on "resize", =>
 				@$hspliter.trigger "spliter.resize"
 				
