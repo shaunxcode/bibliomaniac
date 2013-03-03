@@ -18289,7 +18289,7 @@ require.register("bibliomaniac/lib/ChaptersPanel/View.js", function(module, expo
     View.prototype.render = function() {
       var _this = this;
       this.chapterViews = [];
-      this.$el.html(this.$topPanel = $("<div />").addClass("topPanel").append(this.$booksCombo = $("<select />"), this.$newChapterButton = $("<button />").text("new chapter"), this.$detailsButton = $("<button />").text("details"), this.$wordCount = $("<div />").addClass("wordCount")));
+      this.$el.html(this.$topPanel = $("<div />").addClass("topPanel").append(this.$newBookButton = $("<button />").text("new book"), this.$booksCombo = $("<select />"), this.$newChapterButton = $("<button />").text("new chapter"), this.$detailsButton = $("<button />").text("details"), this.$wordCount = $("<div />").addClass("wordCount")));
       this.$el.append(this.$holder = $("<div />").addClass("holder").html(this.$chapters = $("<ul />")));
       this.listenTo(this.collection, "reset", this.addAll);
       this.$booksCombo.on("change", function() {

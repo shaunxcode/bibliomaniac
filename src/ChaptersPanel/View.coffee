@@ -18,6 +18,7 @@ class View extends Backbone.View
 		@chapterViews = []
 
 		@$el.html @$topPanel = $("<div />").addClass("topPanel").append(
+			@$newBookButton = $("<button />").text "new book"
 			@$booksCombo = $("<select />")
 			@$newChapterButton = $("<button />").text "new chapter"
 			@$detailsButton = $("<button />").text "details"
